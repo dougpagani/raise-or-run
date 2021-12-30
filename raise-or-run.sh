@@ -20,7 +20,7 @@
 main() {
     if [[ $# -eq 0 ]]
     then
-        raise-application-by-string-guess
+        raise-application-by-string-guess "$@"
     fi
 
     if [[ $# -eq 2 ]]
