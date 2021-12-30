@@ -84,5 +84,14 @@ printred() {
     nc="\033[0m"
     printf "${c_grey}%s${nc}\n" "$*"
 }
+test-raise-interactive() {
+    main
+}
+test-raise-run() {
+    main "Emacs-todo" "emacs --title Emacs-todo ~/todo.el"
+}
+test-raise-raise-run() {
+    main anki "Anki -- add" /Applications/Anki.app
+}
 main "$@"
 
