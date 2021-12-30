@@ -54,20 +54,20 @@ raise-application-by-string-guess() {
         &
 }
 raise-or-run() {
-    raise_target=$1
-    run_target=$2
+    raise_target="$1"
+    run_target="$2"
 
     # target by class (-xa), then by title (-a)
-    try-to-raise-by-window-class $raise_target \
-        || try-to-raise-by-window-title $raise_target \
+    try-to-raise-by-window-class "$raise_target" \
+        || try-to-raise-by-window-title "$raise_target" \
         \
         || $run_target \
         &
 }
 raise-window-or-raise-app-or-launch-app() {
-    raise_target_1=$1
-    raise_target_2=$2
-    run_target=$3
+    raise_target_1="$1"
+    raise_target_2="$2"
+    run_target="$3"
 
     # Sometimes you want to specify opening a specific window instance
     # of an application if it is open.
@@ -75,11 +75,11 @@ raise-window-or-raise-app-or-launch-app() {
     # default window if it exists, and if not then launch anki.
 
     # target by class (-xa), then by title (-a)
-    try-to-raise-by-window-class $raise_target_1 \
-        || try-to-raise-by-window-title $raise_target_1 \
+    try-to-raise-by-window-class "$raise_target_1" \
+        || try-to-raise-by-window-title "$raise_target_1" \
         \
-        || try-to-raise-by-window-class $raise_target_2 \
-        || try-to-raise-by-window-title $raise_target_2 \
+        || try-to-raise-by-window-class "$raise_target_2" \
+        || try-to-raise-by-window-title "$raise_target_2" \
         \
         || $run_target \
         &
