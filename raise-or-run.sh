@@ -365,6 +365,11 @@ test-raise-or-run-url() {
 test-titled-iterm-instance() {
     # Setting title with an echo-escape-code API in iterm
     # https://apple.stackexchange.com/a/341128
+
+    # Controlling iterm (it is impossible otherwise, having no startup options)
+    # https://superuser.com/a/1508486
+    # ... iterm-run.sh
+
     echo ERROR: NYI${FUNCNAME+ function}: ${FUNCNAME-$0}${FUNCNAME+()}
     exit 1
     # Use-cases:
