@@ -21,7 +21,7 @@ main() {
 
     configure-per-os
 
-    case n in $#
+    case $# in
     0)
         raise-application-by-string-guess "$@"
     ;;
