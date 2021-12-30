@@ -18,7 +18,6 @@
 # can quickly lead to needing to spend clock cycles looking for a specific
 # instance of the application.
 CONFIG_FILE=~/.raise-or-run-config
-set -x
 
 main() {
 
@@ -58,6 +57,7 @@ main-macos() {
 }
 raise-or-open-url() {
     set-browser-config
+# set -x
     # Core possible dependencies:
     # https://github.com/arbal/brave-control
     # https://github.com/prasmussen/chrome-cli
@@ -69,9 +69,11 @@ raise-or-open-url() {
         onelink=$(echo "$urlmatches" | sed -n 1p)
         # url was found
         tabid=$(get-tab-from-links-output "$onelink")
+        echo >&2 "tabid: $tabid"
         chrome-cli activate -t ${tabid?no tab found}
 
         windowtitle=$(get-window-title-from-tabid $tabid)
+        echo >&2 "windowtitle: $windowtitle"
         macos-try-to-raise-by-window-title "$BROWSER_APP" "$windowtitle" '' 
     else
         # url needs to be opened
@@ -81,7 +83,7 @@ raise-or-open-url() {
 }
 get-window-title-from-tabid() {
     tabid=${1?need tabid}
-    chrome-cli list tabs | sed "s/^\[$tabid\] //" 
+    chrome-cli list tabs | egrep "(:$tabid\\]|\\[$tabid\\])" | sed "s/^\[[0-9]*:$tabid\] //" 
 }
 set-browser-config() {
     if notty; 
@@ -141,7 +143,14 @@ ask-and-set-browser() {
 }
 function notty() { ! [ -t 0 ]; }
 get-tab-from-links-output() {
-    echo "$1" | substring-between-on-same-line : ]
+    # some escaping issues with sed's interp of "["
+    # ... also, chrome-cli changes output format if more than one window
+    echo "$1" | sed 's/^\[//' | sed 's/].*//' | cut -f2 -d:
+}
+get-tab-from-links-output-mothballed() {
+    echo "$1" | substring-between-on-same-line : ] \
+        ||
+    echo "$1" | substring-between-on-same-line [ ]
 }
 substring-between-on-same-line ()
 {
@@ -152,7 +161,7 @@ substring-between-on-same-line ()
     fi;
     local START="$1";
     local END="$2";
-    sed -e 's/.*'"${START}"'\(.*\)'"${END}"'.*/\1/'
+    sed -e 's/.*'"${START/[/\\[}"'\(.*\)'"${END}"'.*/\1/'
 }
 
 example-output-from-chrome-cli() {
