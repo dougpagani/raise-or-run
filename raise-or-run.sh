@@ -60,6 +60,7 @@ raise-or-run() {
     # target by class (-xa), then by title (-a)
     try-to-raise-by-window-class $raise_target \
         || try-to-raise-by-window-title $raise_target \
+        \
         || $run_target \
         &
 }
@@ -76,8 +77,10 @@ raise-window-or-raise-app-or-launch-app() {
     # target by class (-xa), then by title (-a)
     try-to-raise-by-window-class $raise_target_1 \
         || try-to-raise-by-window-title $raise_target_1 \
+        \
         || try-to-raise-by-window-class $raise_target_2 \
         || try-to-raise-by-window-title $raise_target_2 \
+        \
         || $run_target \
         &
 }
