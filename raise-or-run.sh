@@ -18,6 +18,9 @@
 # can quickly lead to needing to spend clock cycles looking for a specific
 # instance of the application.
 
+export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
+export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
+
 main() {
 
     configure-per-os
@@ -37,6 +40,7 @@ main() {
 main-macos() {
     if [[ "$1" = --web ]]; then
         raise-or-open-url "$2"
+        return "$?"
     fi
     case $# in
     3)
@@ -51,8 +55,42 @@ raise-or-open-url() {
     # Core possible dependencies:
     # https://github.com/arbal/brave-control
     # https://github.com/prasmussen/chrome-cli
-    echo ERROR: NYI${FUNCNAME+ function}: ${FUNCNAME-$0}${FUNCNAME+()}
-    exit 1
+    targetUrl="${1?need a url to look for / open}"
+    linksoutput=$(chrome-cli list links)
+    urlmatches=$(echo "$linksoutput" | grep "$targetUrl")
+    if [[ $? -eq 0 ]]; then
+        onelink=$(echo "$urlmatches" | sed -n 1p)
+        # url was found
+        tabid=$(get-tab-from-links-output "$onelink")
+        chrome-cli activate -t ${tabid?no tab found}
+        # TODO: there is no chrome-cli way to activate a window
+        open -a "$BROWSER_APP"
+    else
+        # url needs to be opened
+        open -a "$BROWSER_APP" "$targetUrl"
+        # open "$targetUrl"
+    fi
+}
+get-tab-from-links-output() {
+    echo "$1" | substring-between-on-same-line : ]
+}
+substring-between-on-same-line ()
+{
+    if [ $# -ne 2 ]; then
+        echo usage: 1>&2;
+        echo "$ ${FUNCNAME[0]} <START> <END>" 1>&2;
+        return 1;
+    fi;
+    local START="$1";
+    local END="$2";
+    sed -e 's/.*'"${START}"'\(.*\)'"${END}"'.*/\1/'
+}
+
+example-output-from-chrome-cli() {
+    # That second part of the dash is the tab id
+    cat <<'EOF'
+[6:113] https://autotiv.monday.com/boards/904139066/views/18056854
+EOF
 }
 main-linux() {
 
@@ -242,7 +280,7 @@ test-raise-or-run-url() {
 }
 # If executed as a script, instead of sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    set -euo pipefail
+    # set -euo pipefail # disabled because $? is often used
     main "$@"
 else
     echo "${BASH_SOURCE[0]}" sourced >&2
