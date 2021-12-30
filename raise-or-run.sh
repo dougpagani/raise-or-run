@@ -37,7 +37,7 @@ main() {
 }
 main-macos() {
     if [[ "$1" = --web ]]; then
-        raise-or-open-url "$2"
+        raise-or-open-url "$2" "$3" # can probably derive 3 later
         return "$?"
     fi
     if [[ "$1" = --devtools ]]; then
@@ -61,6 +61,9 @@ raise-or-open-url() {
     # https://github.com/arbal/brave-control
     # https://github.com/prasmussen/chrome-cli
     targetUrl="${1?need a url to look for / open}"
+    windowtitle="${2?need window title fragment}"
+    #^ can probably scrape this out of chrome-cli's output
+
     linksoutput=$(chrome-cli list links)
     urlmatches=$(echo "$linksoutput" | grep "$targetUrl")
     if [[ $? -eq 0 ]]; then
@@ -68,8 +71,10 @@ raise-or-open-url() {
         # url was found
         tabid=$(get-tab-from-links-output "$onelink")
         chrome-cli activate -t ${tabid?no tab found}
+
         # TODO: there is no chrome-cli way to activate a window
-        open -a "$BROWSER_APP"
+        # open -a "$BROWSER_APP"
+        macos-try-to-raise-by-window-title "$BROWSER_APP" "$windowtitle" '' 
     else
         # url needs to be opened
         open -a "$BROWSER_APP" "$targetUrl"
@@ -331,7 +336,9 @@ test-iterm() {
     main iTerm2 tmux
 }
 test-raise-or-run-url() {
-    main --web https://autotiv.monday.com/boards/904139066
+    # This will even work for if the window is minimized on macos, so you can
+    # tuckaway those hard-to-load webapps.
+    main --web https://autotiv.monday.com/boards/904139066 SPRINT
 
     # It should be considered if a second arg could be given to target the
     # "ideal" url instead of just an "acceptable" one.
