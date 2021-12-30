@@ -284,6 +284,17 @@ test-raise-or-run-url() {
     # 1 == "appearsAs"
     # 2 == "visitedAs"
 }
+test-titled-iterm-instance() {
+    # Setting title with an echo-escape-code API in iterm
+    # https://apple.stackexchange.com/a/341128
+    echo ERROR: NYI${FUNCNAME+ function}: ${FUNCNAME-$0}${FUNCNAME+()}
+    exit 1
+    # Use-cases:
+    # - todo app
+    # - vim-javascript-editor for chrome
+    # - vim-browser-code instance
+    main --term js-injector "echo stuff to type"
+}
 # If executed as a script, instead of sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     # set -euo pipefail # disabled because $? is often used
