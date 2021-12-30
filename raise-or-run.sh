@@ -48,9 +48,10 @@ raise-or-run() {
     run_target=$2
 
     # target by class (-xa), then by title (-a)
-    wmctrl -xa $raise_target || \
-    wmctrl -a $raise_target || \
-    $run_target &
+    wmctrl -xa $raise_target \
+        || wmctrl -a $raise_target \
+        || $run_target \
+        &
 }
 raise-window-or-raise-app-or-launch-app() {
     raise_target_1=$1
