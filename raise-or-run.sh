@@ -181,6 +181,10 @@ macos-list-all-currently-active() {
     # Pieces:
     # https://gist.github.com/timpulver/4753750
     # https://stackoverflow.com/a/5293758
+
+    # A little scriptlet utility written in swift!
+    # https://stackoverflow.com/a/32842314
+
     echo ACTIVE APPS:
     osascript <<EOF | tr , '\n' | trim-empty-lines
 tell application "System Events"
