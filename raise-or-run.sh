@@ -55,11 +55,22 @@ main-macos() {
     ;;
     esac
 }
+raise-or-open-url-for-linux() {
+    # Core possible dependencies:
+    # https://github.com/arbal/brave-control
+    # https://github.com/d4rkb1ue/chrome-control
+
+    # These should give the same kind of information that chrome-cli does. The
+    # tricky part should be activation of a tab. Not sure if it is possible
+    # with these packages; I haven't looked.
+
+    echo ERROR: NYI${FUNCNAME+ function}: ${FUNCNAME-$0}${FUNCNAME+()}
+    exit 1
+}
 raise-or-open-url() {
     set-browser-config
 # set -x
-    # Core possible dependencies:
-    # https://github.com/arbal/brave-control
+    # Core dependency:
     # https://github.com/prasmussen/chrome-cli
     targetUrl="${1?need a url to look for / open}"
 
