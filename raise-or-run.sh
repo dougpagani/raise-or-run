@@ -17,9 +17,7 @@
 # like the terminal or the web where having multiple instances running
 # can quickly lead to needing to spend clock cycles looking for a specific
 # instance of the application.
-
-export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
-export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
+CONFIG_FILE=~/.raise-or-run-config
 
 main() {
 
@@ -58,6 +56,7 @@ main-macos() {
     esac
 }
 raise-or-open-url() {
+    set-browser-config
     # Core possible dependencies:
     # https://github.com/arbal/brave-control
     # https://github.com/prasmussen/chrome-cli
@@ -77,6 +76,41 @@ raise-or-open-url() {
         # open "$targetUrl"
     fi
 }
+set-browser-config() {
+    if notty; 
+    then # do default
+        export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
+        export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
+    else
+        browsertoken=$(cat "$CONFIG_FILE")
+        case "$browsertoken" in
+            "")
+                ask-and-set-browser
+                die 'browser is set; please run again' $?
+            ;;
+            brave)
+                export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
+                export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
+            ;;
+            *)
+                die "unknown browser: $browsertoken"
+        esac
+    fi
+}
+reset-config() {
+    rm "$CONFIG_FILE"
+}
+ask-and-set-browser() {
+    # obviously need to modify this, just an example
+    chromiumEnum=(brave chrome chromium);
+    PS3='Select which chromium you use: ';
+    select opt in "${chromiumEnum[@]}";
+    do
+        echo "$opt" > "$CONFIG_FILE"
+        break
+    done;
+}
+function notty() { ! [ -t 0 ]; }
 get-tab-from-links-output() {
     echo "$1" | substring-between-on-same-line : ]
 }
