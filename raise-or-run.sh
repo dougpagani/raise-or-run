@@ -129,5 +129,13 @@ test-raise-raise-run() {
 test-logic() {
     main 'non-matching string' 'echo xasdf'
 }
-main "$@"
+
+# If executed as a script, instead of sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    set -euo pipefail
+    main "$@"
+else
+    echo "${BASH_SOURCE[0]}" sourced >&2
+    shopt -s expand_aliases # reset from source-harnessing
+fi
 
