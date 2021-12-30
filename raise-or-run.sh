@@ -18,24 +18,24 @@
 # instance of the application.
 
 main() {
-    if [[ $# -eq 0 ]]
-    then
+    case n in $#
+    0)
         raise-application-by-string-guess "$@"
-    fi
-
-    if [[ $# -eq 2 ]]
-    then
+    ;;
+    1)
+        die "ERROR: invalid number of args: $#"
+    ;;
+    2)
         raise-or-run "$@"
-    fi
-
-    # Sometimes you want to specify opening a specific window instance
-    # of an application if it is open.
-    # Eg. open the add window in anki if it exists, if not then open the
-    # default window if it exists, and if not then launch anki.
-    if [[ $# -eq 3 ]]
-    then
+    ;;
+    3)
         raise-window-or-raise-app-or-launch-app "$@"
-    fi
+    ;;
+
+    *)
+        die "ERROR: invalid number of args: $#"
+    ;;
+    esac
 }
 raise-application-by-string-guess() {
     raise_target=$(zenity --entry --text "Raise Application:")
@@ -57,12 +57,30 @@ raise-window-or-raise-app-or-launch-app() {
     raise_target_2=$2
     run_target=$3
 
+    # Sometimes you want to specify opening a specific window instance
+    # of an application if it is open.
+    # Eg. open the add window in anki if it exists, if not then open the
+    # default window if it exists, and if not then launch anki.
+
     # target by class (-xa), then by title (-a)
     wmctrl -xa $raise_target_1 || \
     wmctrl -a $raise_target_1 || \
     wmctrl -xa $raise_target_2 || \
     wmctrl -a $raise_target_2 || \
     $run_target &
+}
+die() {
+    printred "$1" >&2
+    if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+        exit ${2-9}
+    else
+        return ${2-9}
+    fi
+}
+printred() {
+    c_grey="\x1b[38;5;1m"
+    nc="\033[0m"
+    printf "${c_grey}%s${nc}\n" "$*"
 }
 main "$@"
 
