@@ -118,7 +118,7 @@ EOF
 }
 function trim-empty-lines() { sed "/^\$/d"; }
 try-to-raise-by-window-class() {
-    # this is usually something like RDN, e.g. com.company.brave
+    # this is usually something like RDN, e.g. com.brave.Browser
     $wmctrl -xa "${1?need a string to try and match on}"
 }
 try-to-raise-by-window-title() {
