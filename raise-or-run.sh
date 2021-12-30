@@ -82,27 +82,49 @@ set-browser-config() {
         export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
         export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
     else
-        browsertoken=$(cat "$CONFIG_FILE")
-        case "$browsertoken" in
-            "")
-                ask-and-set-browser
-                die 'browser is set; please run again' $?
-            ;;
-            brave)
-                export BROWSER_APP="Brave Browser" # todo -- config this with a dotfile
-                export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
-            ;;
-            *)
-                die "unknown browser: $browsertoken"
-        esac
+        set-browser-config-interactively-if-needed
     fi
+}
+set-browser-config-interactively-if-needed() {
+    # Add more as per this procedure:
+    # https://github.com/prasmussen/chrome-cli
+    browsertoken=$(cat "$CONFIG_FILE" 2> /dev/null)
+    case "$browsertoken" in
+        "")
+            ask-and-set-browser
+            die 'browser is set; please run again' $?
+        ;;
+        brave)
+            export BROWSER_APP="Brave Browser"
+            export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser" 
+        ;;
+        chromium)
+            export CHROME_BUNDLE_IDENTIFIER="org.chromium.Chromium"
+            export BROWSER_APP="Chromium"
+        ;;
+        vivaldi)
+            export CHROME_BUNDLE_IDENTIFIER="com.vivaldi.Vivaldi"
+            export BROWSER_APP="Vivaldi"
+        ;;
+        chrome)
+            export CHROME_BUNDLE_IDENTIFIER="com.google.Chrome"
+            export BROWSER_APP="Google Chrome"
+        ;;
+        chrome-canary)
+            export CHROME_BUNDLE_IDENTIFIER="com.google.Chrome.canary"
+            export BROWSER_APP="TODO"
+            die "please add the app name for this option to the script"
+        ;;
+        *)
+            die "unknown browser: $browsertoken"
+    esac
 }
 reset-config() {
     rm "$CONFIG_FILE"
 }
 ask-and-set-browser() {
     # obviously need to modify this, just an example
-    chromiumEnum=(brave chrome chromium);
+    chromiumEnum=(brave chrome chromium vivaldi chrome-canary);
     PS3='Select which chromium you use: ';
     select opt in "${chromiumEnum[@]}";
     do
