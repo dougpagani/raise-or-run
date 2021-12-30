@@ -42,8 +42,8 @@ main() {
 }
 raise-application-by-string-guess() {
     raise_target=$(zenity --entry --text "Raise Application:")
-    wmctrl -xa $raise_target \
-        || wmctrl -a $raise_target \
+    $wmctrl -xa $raise_target \
+        || $wmctrl -a $raise_target \
         &
 }
 raise-or-run() {
@@ -51,8 +51,8 @@ raise-or-run() {
     run_target=$2
 
     # target by class (-xa), then by title (-a)
-    wmctrl -xa $raise_target \
-        || wmctrl -a $raise_target \
+    $wmctrl -xa $raise_target \
+        || $wmctrl -a $raise_target \
         || $run_target \
         &
 }
@@ -67,21 +67,22 @@ raise-window-or-raise-app-or-launch-app() {
     # default window if it exists, and if not then launch anki.
 
     # target by class (-xa), then by title (-a)
-    wmctrl -xa $raise_target_1 \
-        || wmctrl -a $raise_target_1 \
-        || wmctrl -xa $raise_target_2 \
-        || wmctrl -a $raise_target_2 \
+    $wmctrl -xa $raise_target_1 \
+        || $wmctrl -a $raise_target_1 \
+        || $wmctrl -xa $raise_target_2 \
+        || $wmctrl -a $raise_target_2 \
         || $run_target \
         &
 }
 configure-per-os() {
     case "$OSTYPE" in
         linux-gnu)
+            wmctrl=wmctrl
             : # do nothing; it was built for linux
             ;;
         darwin*)
             # Mac OSX
-            alias wmctrl=wmctrl-fake
+            wmctrl=wmctrl-fake
             ;;
         *)
             die "unknown os"
