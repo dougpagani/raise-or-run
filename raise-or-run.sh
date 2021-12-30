@@ -5,6 +5,7 @@
 # - use a browser controller cli to find a tab w/ heavy page loads e.g. monday.com
 # - automated provisioning of keyboard shortcuts and new raise-or-runs from $#
 # == 0 invocations.
+# - some osascript in a related task: https://apple.stackexchange.com/a/286942
 ################################################################################
 
 # Raise or run an application for efficient navigation.
@@ -63,6 +64,23 @@ tell application "System Events"
 end tell
 EOF
 
+}
+macos-try-to-raise-by-window-title() {
+    appname="${1?need exact app name}"
+    titlefragment="${2?need part of window title}"
+    runspec="${3?need some shell code}"
+
+    osascript <<EOF | grep "action AXRaise of window"
+    tell application "System Events" to tell process "$appname"
+        set frontmost to true
+        windows where title contains "$titlefragment"
+        if result is not {} then perform action "AXRaise" of item 1 of result
+    end tell
+EOF
+    if [[ $? -ne 0 ]]; then
+        echo EXEC: $runspec
+        eval "$runspec"
+    fi
 }
 function trim-empty-lines() { sed "/^\$/d"; }
 try-to-raise-by-window-class() {
@@ -160,7 +178,18 @@ test-all() {
     test-raise-raise-run
     test-logic
 }
-
+test-chromium-debugger() {
+    args=( 
+        "Brave Browser"
+        DevTools 
+        'open -a "Brave Browser"; osascript -e "tell application \"System Events\" to keystroke \"i\" using {option down, command down}" ' 
+    )
+    macos-try-to-raise-by-window-title "${args[@]}"
+    # main "${args[@]}"
+}
+test-iterm() {
+    main iTerm2 tmux
+}
 # If executed as a script, instead of sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     set -euo pipefail
