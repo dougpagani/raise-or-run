@@ -73,6 +73,8 @@ raise-or-open-url() {
 
         windowtitle=$(get-window-title-from-tabid $tabid)
         macos-try-to-raise-by-window-title "$BROWSER_APP" "$windowtitle" '' 
+        # TODO: fix last case -- when window is minimized and there are no
+        # other windows.
     else
         # url needs to be opened
         open -a "$BROWSER_APP" "$targetUrl"
