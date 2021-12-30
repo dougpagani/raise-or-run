@@ -25,13 +25,7 @@ main() {
 
     if [[ $# -eq 2 ]]
     then
-        raise_target=$1
-        run_target=$2
-
-        # target by class (-xa), then by title (-a)
-        wmctrl -xa $raise_target || \
-        wmctrl -a $raise_target || \
-        $run_target &
+        raise-or-run "$@"
     fi
 
     # Sometimes you want to specify opening a specific window instance
@@ -40,16 +34,7 @@ main() {
     # default window if it exists, and if not then launch anki.
     if [[ $# -eq 3 ]]
     then
-        raise_target_1=$1
-        raise_target_2=$2
-        run_target=$3
-
-        # target by class (-xa), then by title (-a)
-        wmctrl -xa $raise_target_1 || \
-        wmctrl -a $raise_target_1 || \
-        wmctrl -xa $raise_target_2 || \
-        wmctrl -a $raise_target_2 || \
-        $run_target &
+        raise-window-or-raise-app-or-launch-app "$@"
     fi
 }
 raise-application-by-string-guess() {
@@ -57,6 +42,27 @@ raise-application-by-string-guess() {
     wmctrl -xa $raise_target \
         || wmctrl -a $raise_target \
         &
+}
+raise-or-run() {
+    raise_target=$1
+    run_target=$2
+
+    # target by class (-xa), then by title (-a)
+    wmctrl -xa $raise_target || \
+    wmctrl -a $raise_target || \
+    $run_target &
+}
+raise-window-or-raise-app-or-launch-app() {
+    raise_target_1=$1
+    raise_target_2=$2
+    run_target=$3
+
+    # target by class (-xa), then by title (-a)
+    wmctrl -xa $raise_target_1 || \
+    wmctrl -a $raise_target_1 || \
+    wmctrl -xa $raise_target_2 || \
+    wmctrl -a $raise_target_2 || \
+    $run_target &
 }
 main "$@"
 
