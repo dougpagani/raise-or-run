@@ -63,11 +63,12 @@ raise-window-or-raise-app-or-launch-app() {
     # default window if it exists, and if not then launch anki.
 
     # target by class (-xa), then by title (-a)
-    wmctrl -xa $raise_target_1 || \
-    wmctrl -a $raise_target_1 || \
-    wmctrl -xa $raise_target_2 || \
-    wmctrl -a $raise_target_2 || \
-    $run_target &
+    wmctrl -xa $raise_target_1 \
+        || wmctrl -a $raise_target_1 \
+        || wmctrl -xa $raise_target_2 \
+        || wmctrl -a $raise_target_2 \
+        || $run_target \
+        &
 }
 die() {
     printred "$1" >&2
