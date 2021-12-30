@@ -20,9 +20,7 @@
 main() {
     if [[ $# -eq 0 ]]
     then
-        raise_target=$(zenity --entry --text "Raise Application:")
-        wmctrl -xa $raise_target || \
-        wmctrl -a $raise_target &
+        raise-application-by-string-guess
     fi
 
     if [[ $# -eq 2 ]]
@@ -54,4 +52,10 @@ main() {
         $run_target &
     fi
 }
+raise-application-by-string-guess() {
+    raise_target=$(zenity --entry --text "Raise Application:")
+    wmctrl -xa $raise_target || \
+    wmctrl -a $raise_target &
+}
 main
+
