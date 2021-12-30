@@ -91,6 +91,8 @@ configure-per-os() {
 }
 wmctrl-fake() {
     echo "DRY: wmctrl $@"
+    # pass if false is not found
+    ! ( echo "$@" | grep 'non-matching string' )
 }
 die() {
     printred "$1" >&2
@@ -113,6 +115,9 @@ test-raise-run() {
 }
 test-raise-raise-run() {
     main anki "Anki -- add" /Applications/Anki.app
+}
+test-logic() {
+    main 'non-matching string' 'echo xasdf'
 }
 main "$@"
 
