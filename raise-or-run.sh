@@ -40,6 +40,31 @@ main() {
     ;;
     esac
 }
+macos-list-all-currently-active() {
+
+    # TODO: merge these to be on the same line somehow
+    # Pieces:
+    # https://gist.github.com/timpulver/4753750
+    # https://stackoverflow.com/a/5293758
+    echo ACTIVE APPS:
+    osascript <<EOF | tr , '\n' | trim-empty-lines
+tell application "System Events"
+    get name of every process
+end tell
+EOF
+
+    echo
+    echo
+
+    echo WINDOW TITLES:
+    osascript <<EOF | tr , '\n' | trim-empty-lines
+tell application "System Events"
+    get name of every window of every process
+end tell
+EOF
+
+}
+function trim-empty-lines() { sed "/^\$/d"; }
 try-to-raise-by-window-class() {
     # this is usually something like RDN, e.g. com.company.brave
     $wmctrl -xa "${1?need a string to try and match on}"
