@@ -35,6 +35,9 @@ main() {
     esac
 }
 main-macos() {
+    if [[ "$1" = --web ]]; then
+        raise-or-open-url "$2"
+    fi
     case $# in
     3)
         macos-try-to-raise-by-window-title "$@"
@@ -43,6 +46,13 @@ main-macos() {
         die "ERROR: invalid number of args: $#"
     ;;
     esac
+}
+raise-or-open-url() {
+    # Core possible dependencies:
+    # https://github.com/arbal/brave-control
+    # https://github.com/prasmussen/chrome-cli
+    echo ERROR: NYI${FUNCNAME+ function}: ${FUNCNAME-$0}${FUNCNAME+()}
+    exit 1
 }
 main-linux() {
 
@@ -215,6 +225,20 @@ test-iterm() {
     # Not sure what the behavior should be if no valid runspec is given... this
     # test should be mothballed until the right path is chosen.
     main iTerm2 tmux
+}
+test-raise-or-run-url() {
+    main --web https://autotiv.monday.com/boards/904139066
+
+    # It should be considered if a second arg could be given to target the
+    # "ideal" url instead of just an "acceptable" one.
+    # e.g.
+    # main --web \
+    #   https://autotiv.monday.com/boards/904139066
+    #   https://autotiv.monday.com/boards/904139066/views/18056854
+
+    # ... they also may appear different because of redirects.
+    # 1 == "appearsAs"
+    # 2 == "visitedAs"
 }
 # If executed as a script, instead of sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
