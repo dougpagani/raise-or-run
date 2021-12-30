@@ -58,5 +58,5 @@ raise-application-by-string-guess() {
         || wmctrl -a $raise_target \
         &
 }
-main
+main "$@"
 
