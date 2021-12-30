@@ -40,10 +40,17 @@ main() {
     ;;
     esac
 }
+try-to-raise-by-window-class() {
+    # this is usually something like RDN, e.g. com.company.brave
+    $wmctrl -xa "${1?need a string to try and match on}"
+}
+try-to-raise-by-window-title() {
+    $wmctrl -a "${1?need a string to try and match on}"
+}
 raise-application-by-string-guess() {
     raise_target=$(zenity --entry --text "Raise Application:")
-    $wmctrl -xa $raise_target \
-        || $wmctrl -a $raise_target \
+     try-to-raise-by-window-class $raise_target \
+        || try-to-raise-by-window-title $raise_target \
         &
 }
 raise-or-run() {
@@ -51,8 +58,8 @@ raise-or-run() {
     run_target=$2
 
     # target by class (-xa), then by title (-a)
-    $wmctrl -xa $raise_target \
-        || $wmctrl -a $raise_target \
+    try-to-raise-by-window-class $raise_target \
+        || try-to-raise-by-window-title $raise_target \
         || $run_target \
         &
 }
@@ -67,10 +74,10 @@ raise-window-or-raise-app-or-launch-app() {
     # default window if it exists, and if not then launch anki.
 
     # target by class (-xa), then by title (-a)
-    $wmctrl -xa $raise_target_1 \
-        || $wmctrl -a $raise_target_1 \
-        || $wmctrl -xa $raise_target_2 \
-        || $wmctrl -a $raise_target_2 \
+    try-to-raise-by-window-class $raise_target_1 \
+        || try-to-raise-by-window-title $raise_target_1 \
+        || try-to-raise-by-window-class $raise_target_2 \
+        || try-to-raise-by-window-title $raise_target_2 \
         || $run_target \
         &
 }
