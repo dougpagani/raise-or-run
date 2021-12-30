@@ -54,8 +54,9 @@ main() {
 }
 raise-application-by-string-guess() {
     raise_target=$(zenity --entry --text "Raise Application:")
-    wmctrl -xa $raise_target || \
-    wmctrl -a $raise_target &
+    wmctrl -xa $raise_target \
+        || wmctrl -a $raise_target \
+        &
 }
 main
 
