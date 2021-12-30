@@ -42,6 +42,12 @@ main-macos() {
         raise-or-open-url "$2"
         return "$?"
     fi
+    if [[ "$1" = --devtools ]]; then
+        # This backdoor is here because the keyshortcut program is struggling
+        # with string-within-string, proper-argv parsing.
+        test-chromium-debugger
+        return "$?"
+    fi
     case $# in
     3)
         macos-try-to-raise-by-window-title "$@"
