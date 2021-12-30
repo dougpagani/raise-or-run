@@ -22,6 +22,30 @@ main() {
 
     configure-per-os
 
+    case "$OSTYPE" in
+        linux-gnu)
+            main-linux "$@"
+            ;;
+        darwin*)
+            main-macos "$@"
+            ;;
+        *)
+            die "unknown os"
+            ;;
+    esac
+}
+main-macos() {
+    case $# in
+    3)
+        macos-try-to-raise-by-window-title "$@"
+    ;;
+    *)
+        die "ERROR: invalid number of args: $#"
+    ;;
+    esac
+}
+main-linux() {
+
     case $# in
     0)
         raise-application-by-string-guess "$@"
@@ -184,8 +208,8 @@ test-chromium-debugger() {
         DevTools 
         'open -a "Brave Browser"; osascript -e "tell application \"System Events\" to keystroke \"i\" using {option down, command down}" ' 
     )
-    macos-try-to-raise-by-window-title "${args[@]}"
-    # main "${args[@]}"
+    # macos-try-to-raise-by-window-title "${args[@]}"
+    main "${args[@]}"
 }
 test-iterm() {
     main iTerm2 tmux
