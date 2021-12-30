@@ -18,6 +18,9 @@
 # instance of the application.
 
 main() {
+
+    configure-per-os
+
     case n in $#
     0)
         raise-application-by-string-guess "$@"
@@ -70,6 +73,23 @@ raise-window-or-raise-app-or-launch-app() {
         || wmctrl -a $raise_target_2 \
         || $run_target \
         &
+}
+configure-per-os() {
+    case "$OSTYPE" in
+        linux-gnu)
+            : # do nothing; it was built for linux
+            ;;
+        darwin*)
+            # Mac OSX
+            alias wmctrl=wmctrl-fake
+            ;;
+        *)
+            die "unknown os"
+            ;;
+    esac
+}
+wmctrl-fake() {
+    echo "DRY: wmctrl $@"
 }
 die() {
     printred "$1" >&2
