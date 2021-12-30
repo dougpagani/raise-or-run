@@ -1,4 +1,5 @@
-#! /bin/bash
+#!/usr/bin/env bash
+################################################################################
 
 # Raise or run an application for efficient navigation.
 
