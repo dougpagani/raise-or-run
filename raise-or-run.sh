@@ -18,6 +18,7 @@
 # can quickly lead to needing to spend clock cycles looking for a specific
 # instance of the application.
 CONFIG_FILE=~/.raise-or-run-config
+set -x
 
 main() {
 
@@ -37,7 +38,7 @@ main() {
 }
 main-macos() {
     if [[ "$1" = --web ]]; then
-        raise-or-open-url "$2" "$3" # can probably derive 3 later
+        raise-or-open-url "$2"
         return "$?"
     fi
     if [[ "$1" = --devtools ]]; then
@@ -61,8 +62,6 @@ raise-or-open-url() {
     # https://github.com/arbal/brave-control
     # https://github.com/prasmussen/chrome-cli
     targetUrl="${1?need a url to look for / open}"
-    windowtitle="${2?need window title fragment}"
-    #^ can probably scrape this out of chrome-cli's output
 
     linksoutput=$(chrome-cli list links)
     urlmatches=$(echo "$linksoutput" | grep "$targetUrl")
@@ -72,14 +71,17 @@ raise-or-open-url() {
         tabid=$(get-tab-from-links-output "$onelink")
         chrome-cli activate -t ${tabid?no tab found}
 
-        # TODO: there is no chrome-cli way to activate a window
-        # open -a "$BROWSER_APP"
+        windowtitle=$(get-window-title-from-tabid $tabid)
         macos-try-to-raise-by-window-title "$BROWSER_APP" "$windowtitle" '' 
     else
         # url needs to be opened
         open -a "$BROWSER_APP" "$targetUrl"
         # open "$targetUrl"
     fi
+}
+get-window-title-from-tabid() {
+    tabid=${1?need tabid}
+    chrome-cli list tabs | sed "s/^\[$tabid\] //" 
 }
 set-browser-config() {
     if notty; 
@@ -338,7 +340,7 @@ test-iterm() {
 test-raise-or-run-url() {
     # This will even work for if the window is minimized on macos, so you can
     # tuckaway those hard-to-load webapps.
-    main --web https://autotiv.monday.com/boards/904139066 SPRINT
+    main --web https://autotiv.monday.com/boards/904139066
 
     # It should be considered if a second arg could be given to target the
     # "ideal" url instead of just an "acceptable" one.
