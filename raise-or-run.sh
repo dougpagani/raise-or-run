@@ -69,7 +69,6 @@ raise-or-open-url-for-linux() {
 }
 raise-or-open-url() {
     set-browser-config
-# set -x
     # Core dependency:
     # https://github.com/prasmussen/chrome-cli
     targetUrl="${1?need a url to look for / open}"
