@@ -212,6 +212,8 @@ test-chromium-debugger() {
     main "${args[@]}"
 }
 test-iterm() {
+    # Not sure what the behavior should be if no valid runspec is given... this
+    # test should be mothballed until the right path is chosen.
     main iTerm2 tmux
 }
 # If executed as a script, instead of sourced
