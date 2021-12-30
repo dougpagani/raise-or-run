@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 ################################################################################
+# Sources & improvements:
+# - https://gist.github.com/timpulver/4753750 -- to improve debug-list-all
+# - use a browser controller cli to find a tab w/ heavy page loads e.g. monday.com
+# - automated provisioning of keyboard shortcuts and new raise-or-runs from $#
+# == 0 invocations.
+################################################################################
 
 # Raise or run an application for efficient navigation.
 
