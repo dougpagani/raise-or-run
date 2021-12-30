@@ -129,6 +129,12 @@ test-raise-raise-run() {
 test-logic() {
     main 'non-matching string' 'echo xasdf'
 }
+test-all() {
+    test-raise-interactive
+    test-raise-run
+    test-raise-raise-run
+    test-logic
+}
 
 # If executed as a script, instead of sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
