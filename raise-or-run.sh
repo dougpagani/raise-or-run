@@ -69,11 +69,9 @@ raise-or-open-url() {
         onelink=$(echo "$urlmatches" | sed -n 1p)
         # url was found
         tabid=$(get-tab-from-links-output "$onelink")
-        echo >&2 "tabid: $tabid"
         chrome-cli activate -t ${tabid?no tab found}
 
         windowtitle=$(get-window-title-from-tabid $tabid)
-        echo >&2 "windowtitle: $windowtitle"
         macos-try-to-raise-by-window-title "$BROWSER_APP" "$windowtitle" '' 
     else
         # url needs to be opened
